@@ -21,7 +21,7 @@ const Header = ({ shop }) => {
             products
           </Link>
         </div>
-        <div className="relative ml-14"><Link to="/cart/carts"><IconBag /><CartBadge /></Link></div>
+        <div className="relative ml-14"><Link to="/cart"><IconBag /><CartBadge /></Link></div>
       </header>
     </>
   );

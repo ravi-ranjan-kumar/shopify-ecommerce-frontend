@@ -1,7 +1,7 @@
 import { CacheLong, gql, Link, useRouteParams, useShopQuery } from "@shopify/hydrogen";
-import Layout from "../components/Layout.server";
-import ProductCard from "../components/ProductCard.server";
-import SelectFilter from "../components/SelectFilter.client";
+import Layout from "../../components/Layout.server";
+import ProductCard from "../../components/ProductCard.server";
+import SelectFilter from "../../components/SelectFilter.client";
 
 const AllProducts = () => {
   const {

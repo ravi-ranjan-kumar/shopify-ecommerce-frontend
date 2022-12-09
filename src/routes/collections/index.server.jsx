@@ -1,5 +1,5 @@
 import { Link, Image, gql, useShopQuery, CacheLong } from "@shopify/hydrogen";
-import Layout from "../components/Layout.server";
+import Layout from "../../components/Layout.server";
 
 export default function AllCollections() {
   const {
