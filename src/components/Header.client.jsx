@@ -1,6 +1,10 @@
 import { Link, useCart } from "@shopify/hydrogen";
+import { useState } from "react";
+import Profile from "./Profile.client";
 
-const Header = ({ shop }) => {
+const Header = ({ shop, session, user }) => {
+  const [showProfile, setShowProfile] = useState(false);
+
   return (
     <>
       <header
@@ -13,15 +17,43 @@ const Header = ({ shop }) => {
           </Link>
         </div>
 
-        <div className="flex gap-8 text-md">
+        <div className="flex gap-8 text-md items-center">
           <Link className="font-medium" to="collections">
             Collections
           </Link>
           <Link className="font-medium" to="products">
-            products
+            Products
+          </Link>
+
+          <div className="relative">
+            <button
+              className="font-bold"
+              onClick={() => setShowProfile((current) => !current)}
+            >
+              Profile
+            </button>
+            {showProfile ? (
+              session ? (
+                <Profile session={session} user={user} />
+              ) : (
+                <div className="absolute top-8 bg-yellow-50 flex flex-col">
+                  <Link
+                    className="font-medium bg-blue-500 py-2 px-3 rounded text-yellow-50"
+                    to="account/login"
+                  >
+                    Login
+                  </Link>
+                </div>
+              )
+            ) : null}
+          </div>
+        </div>
+        <div className="relative ml-14">
+          <Link to="/cart">
+            <IconBag />
+            <CartBadge />
           </Link>
         </div>
-        <div className="relative ml-14"><Link to="/cart"><IconBag /><CartBadge /></Link></div>
       </header>
     </>
   );
@@ -52,9 +84,7 @@ function CartBadge() {
     return null;
   }
   return (
-    <div
-      className='text-white bg-red-500 absolute -bottom-[1px] right-0 text-[0.625rem] font-medium subpixel-antialiased h-3 min-w-[0.75rem] flex items-center justify-center leading-none text-center rounded-full w-auto px-[0.125rem] pb-px'
-    >
+    <div className="text-white bg-red-500 absolute -bottom-[1px] right-0 text-[0.625rem] font-medium subpixel-antialiased h-3 min-w-[0.75rem] flex items-center justify-center leading-none text-center rounded-full w-auto px-[0.125rem] pb-px">
       <span>{totalQuantity}</span>
     </div>
   );
