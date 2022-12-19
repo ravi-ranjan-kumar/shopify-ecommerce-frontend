@@ -8,6 +8,7 @@ import {
 } from "@shopify/hydrogen";
 import { Suspense } from "react";
 
+
 function App({ routes }) {
   return (
     <Suspense fallback={null}>

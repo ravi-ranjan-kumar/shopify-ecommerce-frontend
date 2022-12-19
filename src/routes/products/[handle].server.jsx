@@ -3,7 +3,7 @@ import { Suspense } from "react";
 
 import Layout from "../../components/Layout.server";
 import ProductCard from "../../components/ProductCard.server";
-import ProductDetails from "../../components/ProductDetails.client";
+import ProductDetails from "../../components/client/ProductDetails.client";
 
 export default function Product() {
   const { handle } = useRouteParams();

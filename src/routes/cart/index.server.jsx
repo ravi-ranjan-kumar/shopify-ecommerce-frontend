@@ -1,5 +1,5 @@
 import React from 'react'
-import CartDetails from '../../components/CartDetails.client'
+import CartDetails from '../../components/client/CartDetails.client'
 import Layout from '../../components/Layout.server'
 
 const Cart = () => {

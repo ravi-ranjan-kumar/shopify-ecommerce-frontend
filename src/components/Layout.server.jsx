@@ -7,10 +7,10 @@ import {
   useSession,
 } from "@shopify/hydrogen";
 
-import Header from "./Header.client";
+import Header from "./client/Header.client";
 
 const Layout = ({ children }) => {
-  const session = useSession();
+  const {customerAccessToken} = useSession();
 
   const {
     data: { shop },
@@ -20,7 +20,8 @@ const Layout = ({ children }) => {
   });
 
   const user = useShopQuery({
-    query: getUser(session.customerAccessToken),
+    query: getUser(customerAccessToken),
+    cache: CacheLong(),
   });
 
   return (
@@ -33,7 +34,7 @@ const Layout = ({ children }) => {
         </div>
         <Header
           shop={shop}
-          session={session.customerAccessToken}
+          session={customerAccessToken}
           user={user.data.customer}
         />
         <main role="main" id="mainContent" className="flex-grow bg-[#fcf6f5ff]">
@@ -53,15 +54,30 @@ const SHOP_QUERY = gql`
   }
 `;
 
-function getUser(token) {
+export function getUser(token) {
   return gql`
     query {
       customer(customerAccessToken: "${token}") {
         id
+        firstName
+        lastName
         displayName
         acceptsMarketing
         email
         phone
+        defaultAddress{
+          id
+          address1
+          address2
+          city
+          company
+          country
+          firstName
+          lastName
+          phone
+          province
+          zip
+        }
       }
     }
   `;
