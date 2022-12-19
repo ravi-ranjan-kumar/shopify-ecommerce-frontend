@@ -10,7 +10,7 @@ const Profile = ({ user }) => {
   };
 
   return (
-    <div className="absolute flex flex-col -left-14 mt-6 space-y-3 bg-yellow-50 p-4 w-56">
+    <div className="absolute flex flex-col -left-14 mt-6 space-y-3 bg-yellow-50 p-4 w-56 shadow-md">
       <p className="font-bold text-md text-red-500">Hi, {user?.displayName}!</p>
       <Link to="/account" className="font-medium">
         Account

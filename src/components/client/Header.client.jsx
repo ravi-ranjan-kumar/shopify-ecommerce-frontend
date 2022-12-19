@@ -1,4 +1,4 @@
-import { Link, useCart } from "@shopify/hydrogen";
+import { Link, useCart, useNavigate, useServerProps } from "@shopify/hydrogen";
 import { useEffect, useRef, useState } from "react";
 import Profile from "./Profile.client";
 
@@ -30,6 +30,11 @@ const Header = ({ shop, session, user }) => {
             {shop.name}
           </Link>
         </div>
+
+        <form method="GET" action="/search" className="hidden lg:flex border rounded w-96">
+          <input type="search" name="q" className="flex-1 outline-none h-full py-2 bg-transparent" />
+          <button type="submit" className="border-l-2 px-3 py-2 text-slate-600 font-medium">Search</button>
+        </form>
 
         <div className="flex gap-8 text-md items-center">
           <Link className="font-medium" to="collections">
@@ -63,7 +68,7 @@ const Header = ({ shop, session, user }) => {
               session ? (
                 <Profile session={session} user={user} />
               ) : (
-                <div className="absolute top-10 bg-white flex flex-col p-2">
+                <div className="absolute top-5 right-0 flex flex-col mt-6 space-y-3 p-4 bg-yellow-50 shadow-md">
                   <Link
                     className="font-medium bg-blue-500 py-2 px-3 rounded text-yellow-50"
                     to="account/login"
@@ -75,7 +80,7 @@ const Header = ({ shop, session, user }) => {
             ) : null}
           </div>
         </div>
-        <div className="relative ml-14">
+        <div className="relative ml-7">
           <Link to="/cart">
             <IconBag />
             <CartBadge />
