@@ -39,7 +39,6 @@ const UserAddress = ({ address }) => {
             <br />
             {address?.zip}
             <br />
-            
           </address>
           <div>
             <button onClick={deleteAddress}>x</button>

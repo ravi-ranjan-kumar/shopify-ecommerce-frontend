@@ -1,5 +1,4 @@
 import { CacheNone, gql } from "@shopify/hydrogen";
-import React from "react";
 import SignUpForm from "../../components/Auth/SignUpForm.client";
 import Layout from "../../components/Layout.server";
 
@@ -15,8 +14,7 @@ export default SignUp;
 
 export async function api(request, { session, queryShop }) {
   if (!session) {
-    return new Respo();
-    nse("Session storage not available.", { status: 400 });
+    return new Response("Session storage not available.", { status: 400 });
   }
   let newCustomerInputs, fieldErrors, errorIndex;
   newCustomerInputs = await request.json();

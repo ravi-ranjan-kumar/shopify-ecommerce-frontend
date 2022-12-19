@@ -5,6 +5,7 @@ export async function api(request, { session, queryShop }) {
   if (!session) {
     return new Response("Session storage not available.", { status: 400 });
   }
+  
   const { customerAccessToken } = await session.get();
   const address = await request.json();
 

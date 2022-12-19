@@ -26,9 +26,7 @@ const CartDetails = () => {
 
   return (
     <form className="grid grid-cols-3 h-[calc(100vh-6rem)]">
-      <section
-        className="px-4 pb-4 overflow-auto transition md:px-12 col-span-2 pt-4"
-      >
+      <section className="px-4 pb-4 overflow-auto transition md:px-12 col-span-2 pt-4">
         <ul className="grid gap-6 md:gap-10">
           {lines.map((line) => {
             return (
@@ -39,9 +37,7 @@ const CartDetails = () => {
           })}
         </ul>
       </section>
-      <section
-        className="p-4 border-t md:px-12"
-      >
+      <section className="p-4 border-t md:px-12">
         <h2 id="summary-heading" className="sr-only">
           Order summary
         </h2>
@@ -106,7 +102,10 @@ export function CartLineItem() {
     <li key={lineId} className="flex shadow-sm py-4">
       <div className="flex-shrink-0 w-24 h-24 md:w-44 md:h-44 my-auto">
         <Image
-          data={{...merchandise?.image, altText: merchandise.image.altText ||'Product Image'}}
+          data={{
+            ...merchandise?.image,
+            altText: merchandise.image.altText || "Product Image",
+          }}
           className="object-cover object-center w-full h-full border rounded my-auto"
         />
       </div>

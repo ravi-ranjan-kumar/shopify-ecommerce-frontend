@@ -1,5 +1,5 @@
 import { useServerProps } from "@shopify/hydrogen";
-import React, { useState } from "react";
+import { useState } from "react";
 import Form from "./Form.client";
 
 const initialAddress = {
@@ -23,11 +23,13 @@ const AddAddressForm = ({ setIsOpen }) => {
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     const response = await callAddAddressApi(formData);
+
     if (response?.status) {
       setServerProps("search", Date.now());
       setIsOpen(false);
       return;
     }
+    
     setFormError(response);
   };
 

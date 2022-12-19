@@ -1,5 +1,4 @@
 import { gql } from "@shopify/hydrogen";
-import { getUser } from "../../components/Layout.server";
 
 export async function api(request, { session, queryShop }) {
   if (!session) {
@@ -7,8 +6,6 @@ export async function api(request, { session, queryShop }) {
   }
   const { customerAccessToken } = await session.get();
   const CustomerUpdateInput = await request.json();
-
-  console.log(CustomerUpdateInput);
 
   const { data } = await queryShop({
     query: UPDATE_CUSTOMER,

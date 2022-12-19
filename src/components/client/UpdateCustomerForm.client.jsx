@@ -1,5 +1,5 @@
 import { useServerProps } from "@shopify/hydrogen";
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const initialFormData = {
   firstName: "",
@@ -7,6 +7,7 @@ const initialFormData = {
   email: "",
   phone: "",
 };
+
 const UpdateCustomerForm = ({ setIsOpen }) => {
   const [formData, setFormData] = useState(initialFormData);
   const [formError, setFormError] = useState();

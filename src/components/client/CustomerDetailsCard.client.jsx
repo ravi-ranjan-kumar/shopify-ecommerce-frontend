@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import UpdateCustomerForm from "./UpdateCustomerForm.client";
 
 const CustomerDetailsCard = ({ customer }) => {
