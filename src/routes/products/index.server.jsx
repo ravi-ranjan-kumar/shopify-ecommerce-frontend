@@ -1,34 +1,36 @@
-import {
-  CacheLong,
-  gql,
-  Link,
-  useRouteParams,
-  useServerProps,
-  useShopQuery,
-} from "@shopify/hydrogen";
+import { CacheLong, gql, useShopQuery, useUrl } from "@shopify/hydrogen";
 import React from "react";
 import Layout from "../../components/Layout.server";
 import ProductCard from "../../components/ProductCard.server";
 import SelectFilter from "../../components/client/SelectFilter.client";
 
-const AllProduct = ({ search }) => {
+const filterOptions = [
+  { name: "All", to: "id" },
+  { name: "Best Sellings", to: "best_selling" },
+  { name: "Relevance", to: "relevance" },
+  { name: "Latest", to: "created_at" },
+  { name: "Price, low to high", to: "price" },
+  { name: "Alphabetically, A-Z", to: "title" },
+];
+
+const AllProduct = ({ filter }) => {
   const {
     data: { products },
   } = useShopQuery({
     query: QUERY,
     variables: {
-      key: search || "ID",
+      key: (filter && filter.toUpperCase()) || "ID",
     },
     cache: CacheLong,
   });
 
   return (
     <Layout>
-      <SelectFilter />
+      <SelectFilter filterOptions={filterOptions} />
       <section className="w-full gap-4 md:gap-8 grid p-6 md:p-8 lg:p-12">
         <div className="grid-flow-row grid gap-2 gap-y-6 md:gap-4 lg:gap-6 grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-          {products?.nodes.map((product) => (
-            <ProductCard key={product.id} product={product} />
+          {products?.nodes?.map((product) => (
+            <ProductCard key={product?.id} product={product} />
           ))}
         </div>
       </section>
@@ -44,7 +46,6 @@ const QUERY = gql`
       nodes {
         id
         title
-        publishedAt
         handle
         variants(first: 1) {
           nodes {

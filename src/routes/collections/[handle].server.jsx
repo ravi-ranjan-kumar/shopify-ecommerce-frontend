@@ -2,17 +2,25 @@ import {
   gql,
   useShopQuery,
   useRouteParams,
-  useServerAnalytics,
-  ShopifyAnalyticsConstants,
   Seo,
-  Image,
+  CacheLong,
 } from "@shopify/hydrogen";
 
 import { Suspense } from "react";
+import SelectFilter from "../../components/client/SelectFilter.client";
 import Layout from "../../components/Layout.server";
 import ProductCard from "../../components/ProductCard.server";
 
-export default function Collection() {
+const filterOptions = [
+  { name: "All", to: "collection_default" },
+  { name: "Best Sellings", to: "best_selling" },
+  { name: "Relevance", to: "relevance" },
+  { name: "Latest", to: "created" },
+  { name: "Price, low to high", to: "price" },
+  { name: "Alphabetically, A-Z", to: "title" },
+];
+
+export default function Collection({ filter }) {
   const { handle } = useRouteParams();
 
   const {
@@ -21,14 +29,9 @@ export default function Collection() {
     query: QUERY,
     variables: {
       handle,
+      key: (filter && filter.toUpperCase()) || "COLLECTION_DEFAULT",
     },
-  });
-
-  useServerAnalytics({
-    shopify: {
-      pageType: ShopifyAnalyticsConstants.pageType.collection,
-      resourceId: collection.id,
-    },
+    cache: CacheLong,
   });
 
   return (
@@ -37,9 +40,10 @@ export default function Collection() {
         <Seo type="collection" data={collection} />
       </Suspense>
       <header className="relative grid w-full gap-8 justify-items-start">
-        <Image
-          className="max-h-[calc(100vh-10rem)] object-cover"
-          data={collection?.image}
+        <img
+          src={collection?.image?.url}
+          alt={collection?.image?.altText}
+          className="w-full h-[calc(100vh-10rem)] object-cover"
         />
         <div className="absolute flex flex-col top-0 left-0 right-0 bottom-0 pl-14 justify-center space-y-3 border bg-gradient-to-r from-slate-400">
           <h1 className="text-4xl whitespace-pre-wrap font-bold inline-block text-yellow-300 drop-shadow-lg">
@@ -53,10 +57,12 @@ export default function Collection() {
         </div>
       </header>
 
+      <SelectFilter filterOptions={filterOptions} />
+
       <section className="w-full gap-4 md:gap-8 grid p-6 md:p-8 lg:p-12">
         <div className="grid-flow-row grid gap-2 gap-y-6 md:gap-4 lg:gap-6 grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-          {collection.products.nodes.map((product) => (
-            <ProductCard key={product.id} product={product} />
+          {collection?.products?.nodes?.map((product) => (
+            <ProductCard key={product?.id} product={product} />
           ))}
         </div>
       </section>
@@ -65,7 +71,7 @@ export default function Collection() {
 }
 
 const QUERY = gql`
-  query CollectionDetails($handle: String!) {
+  query CollectionDetails($handle: String!, $key: ProductCollectionSortKeys!) {
     collection(handle: $handle) {
       id
       title
@@ -81,7 +87,7 @@ const QUERY = gql`
         height
         altText
       }
-      products(first: 8) {
+      products(first: 8, sortKey: $key) {
         nodes {
           id
           title

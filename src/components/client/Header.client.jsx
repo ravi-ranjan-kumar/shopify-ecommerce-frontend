@@ -1,4 +1,4 @@
-import { Link, useCart, useNavigate, useServerProps } from "@shopify/hydrogen";
+import { Link, useCart } from "@shopify/hydrogen";
 import { useEffect, useRef, useState } from "react";
 import Profile from "./Profile.client";
 
@@ -30,12 +30,7 @@ const Header = ({ shop, session, user }) => {
             {shop.name}
           </Link>
         </div>
-
-        <form method="GET" action="/search" className="hidden lg:flex border rounded w-96">
-          <input type="search" name="q" className="flex-1 outline-none h-full py-2 bg-transparent" />
-          <button type="submit" className="border-l-2 px-3 py-2 text-slate-600 font-medium">Search</button>
-        </form>
-
+        <SearchBar />
         <div className="flex gap-8 text-md items-center">
           <Link className="font-medium" to="collections">
             Collections
@@ -119,5 +114,28 @@ function CartBadge() {
     <div className="text-white bg-red-500 absolute -bottom-[1px] right-0 text-[0.625rem] font-medium subpixel-antialiased h-3 min-w-[0.75rem] flex items-center justify-center leading-none text-center rounded-full w-auto px-[0.125rem] pb-px">
       <span>{totalQuantity}</span>
     </div>
+  );
+}
+
+function SearchBar() {
+  return (
+    <form
+      method="GET"
+      action="/search"
+      className="hidden lg:flex border border-slate-600 rounded w-96"
+    >
+      <input
+        type="search"
+        name="q"
+        className="flex-1 outline-none h-full py-2 bg-transparent"
+        required
+      />
+      <button
+        type="submit"
+        className="px-3 py-2 bg-slate-600 text-yellow-50 font-medium"
+      >
+        Search
+      </button>
+    </form>
   );
 }
