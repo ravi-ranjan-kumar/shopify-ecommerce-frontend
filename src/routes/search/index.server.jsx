@@ -1,8 +1,7 @@
 import { gql, Link, useShopQuery, useUrl } from "@shopify/hydrogen";
-import React from "react";
+import LoadMore from "../../components/client/LoadMore.client";
 import SelectFilter from "../../components/client/SelectFilter.client";
 import Layout from "../../components/Layout.server";
-import ProductCard from "../../components/ProductCard.server";
 
 const filterOptions = [
   { name: "All", to: "id" },
@@ -13,32 +12,36 @@ const filterOptions = [
   { name: "Alphabetically, A-Z", to: "title" },
 ];
 
-const Search = ({ filter }) => {
-  const { searchParams } = useUrl();
+let globalSearchQuery;
 
-  const {
-    data: { products },
-  } = useShopQuery({
+const Search = ({ filter }) => {
+  let products,
+    INITIAL_PAGINATION_SIZE = 4,
+    url = useUrl();
+
+  globalSearchQuery = url.searchParams.get("q");
+
+  const { data } = useShopQuery({
     query: SEARCH_QUERY,
     variables: {
-      query: searchParams.get("q"),
+      query: globalSearchQuery,
       key: (filter && filter.toUpperCase()) || "ID",
+      pageBy: INITIAL_PAGINATION_SIZE,
     },
+    preload: true,
   });
+
+  products = data?.products;
 
   return (
     <Layout>
       {products.nodes.length !== 0 ? (
         <>
           <SelectFilter filterOptions={filterOptions} />
-          <h2 className="lg:ml-12 lg:mt-10">Search Result:</h2>
-          <section className="w-full gap-4 md:gap-8 grid p-6 md:p-8 lg:pl-12">
-            <div className="grid-flow-row grid gap-2 gap-y-6 md:gap-4 lg:gap-6 grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-              {products?.nodes?.map((product) => (
-                <ProductCard key={product?.id} product={product} />
-              ))}
-            </div>
-          </section>
+          <h2 className="lg:ml-12 lg:mt-6 text-sm">
+            Search Result: <span className="font-bold">{globalSearchQuery}</span>
+          </h2>
+          <LoadMore products={products} url={url.pathname} filter={filter} />
         </>
       ) : (
         <ProductNotFound />
@@ -50,8 +53,17 @@ const Search = ({ filter }) => {
 export default Search;
 
 const SEARCH_QUERY = gql`
-  query Products($query: String!, $key: ProductSortKeys!) {
-    products(first: 20, sortKey: $key, query: $query) {
+  query Products(
+    $query: String!
+    $key: ProductSortKeys!
+    $pageBy: Int!
+    $cursor: String
+  ) {
+    products(first: $pageBy, after: $cursor, sortKey: $key, query: $query) {
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
       nodes {
         id
         title
@@ -108,4 +120,24 @@ function ProductNotFound() {
       </Link>
     </section>
   );
+}
+
+export async function api(request, { session, queryShop }) {
+  if (!session) {
+    return new Response("Session storage not available.", { status: 400 });
+  }
+  const searchBy = await request.json();
+
+  const { data } = await queryShop({
+    query: SEARCH_QUERY,
+    variables: {
+      query: globalSearchQuery,
+      key: searchBy?.filterBy?.toUpperCase() || "ID",
+      pageBy: searchBy.pageBy || 4,
+      cursor: searchBy.cursor || null,
+    },
+    preload: true,
+  });
+
+  return data?.products;
 }

@@ -4,12 +4,13 @@ import {
   useRouteParams,
   Seo,
   CacheLong,
+  useUrl,
 } from "@shopify/hydrogen";
 
 import { Suspense } from "react";
+import LoadMore from "../../components/client/LoadMore.client";
 import SelectFilter from "../../components/client/SelectFilter.client";
 import Layout from "../../components/Layout.server";
-import ProductCard from "../../components/ProductCard.server";
 
 const filterOptions = [
   { name: "All", to: "collection_default" },
@@ -20,8 +21,13 @@ const filterOptions = [
   { name: "Alphabetically, A-Z", to: "title" },
 ];
 
+const INITIAL_PAGINATION_SIZE = 4;
+let globalHandle;
+
 export default function Collection({ filter }) {
-  const { handle } = useRouteParams();
+  let { handle } = useRouteParams(),
+    url = useUrl();
+  globalHandle = handle;
 
   const {
     data: { collection },
@@ -29,7 +35,8 @@ export default function Collection({ filter }) {
     query: QUERY,
     variables: {
       handle,
-      key: (filter && filter.toUpperCase()) || "COLLECTION_DEFAULT",
+      pageBy: INITIAL_PAGINATION_SIZE,
+      key: "COLLECTION_DEFAULT",
     },
     cache: CacheLong,
   });
@@ -59,19 +66,22 @@ export default function Collection({ filter }) {
 
       <SelectFilter filterOptions={filterOptions} />
 
-      <section className="w-full gap-4 md:gap-8 grid p-6 md:p-8 lg:p-12">
-        <div className="grid-flow-row grid gap-2 gap-y-6 md:gap-4 lg:gap-6 grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-          {collection?.products?.nodes?.map((product) => (
-            <ProductCard key={product?.id} product={product} />
-          ))}
-        </div>
-      </section>
+      <LoadMore
+        products={collection?.products}
+        url={url.pathname}
+        filter={filter}
+      />
     </Layout>
   );
 }
 
 const QUERY = gql`
-  query CollectionDetails($handle: String!, $key: ProductCollectionSortKeys!) {
+  query CollectionDetails(
+    $handle: String!
+    $key: ProductCollectionSortKeys!
+    $pageBy: Int!
+    $cursor: String
+  ) {
     collection(handle: $handle) {
       id
       title
@@ -87,7 +97,11 @@ const QUERY = gql`
         height
         altText
       }
-      products(first: 8, sortKey: $key) {
+      products(first: $pageBy, after: $cursor, sortKey: $key) {
+        pageInfo {
+          hasNextPage
+          endCursor
+        }
         nodes {
           id
           title
@@ -117,3 +131,24 @@ const QUERY = gql`
     }
   }
 `;
+
+export async function api(request, { session, queryShop }) {
+  if (!session) {
+    return new Response("Session storage not available.", { status: 400 });
+  }
+
+  const searchBy = await request.json();
+
+  const { data } = await queryShop({
+    query: QUERY,
+    variables: {
+      handle: globalHandle,
+      key: searchBy?.filterBy?.toUpperCase() || "COLLECTION_DEFAULT",
+      pageBy: searchBy.pageBy || 4,
+      cursor: searchBy.cursor || null,
+    },
+    preload: true,
+  });
+
+  return data?.collection?.products;
+}

@@ -127,7 +127,7 @@ function SearchBar() {
       <input
         type="search"
         name="q"
-        className="flex-1 outline-none h-full py-2 bg-transparent"
+        className="flex-1 outline-none h-full p-2 bg-transparent"
         required
       />
       <button

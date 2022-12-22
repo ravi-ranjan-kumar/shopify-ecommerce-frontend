@@ -2,7 +2,7 @@ import { gql, useShopQuery, useRouteParams, Seo } from "@shopify/hydrogen";
 import { Suspense } from "react";
 
 import Layout from "../../components/Layout.server";
-import ProductCard from "../../components/ProductCard.server";
+import ProductCard from "../../components/ProductCard.client";
 import ProductDetails from "../../components/client/ProductDetails.client";
 
 export default function Product() {

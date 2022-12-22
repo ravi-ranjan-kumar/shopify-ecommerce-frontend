@@ -1,6 +1,6 @@
 import { CacheLong, gql, Image, Link, useShopQuery } from "@shopify/hydrogen";
 import React from "react";
-import ProductCard from "./ProductCard.server";
+import ProductCard from "./ProductCard.client";
 
 const BestSelling = () => {
   const {

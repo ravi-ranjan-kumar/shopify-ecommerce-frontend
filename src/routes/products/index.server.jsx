@@ -1,8 +1,7 @@
-import { CacheLong, gql, useShopQuery, useUrl } from "@shopify/hydrogen";
-import React from "react";
+import { gql, useShopQuery, useUrl } from "@shopify/hydrogen";
 import Layout from "../../components/Layout.server";
-import ProductCard from "../../components/ProductCard.server";
 import SelectFilter from "../../components/client/SelectFilter.client";
+import LoadMore from "../../components/client/LoadMore.client";
 
 const filterOptions = [
   { name: "All", to: "id" },
@@ -13,27 +12,27 @@ const filterOptions = [
   { name: "Alphabetically, A-Z", to: "title" },
 ];
 
+let INITIAL_PAGINATION_SIZE = 4;
+
 const AllProduct = ({ filter }) => {
-  const {
-    data: { products },
-  } = useShopQuery({
+  let products,
+    url = useUrl();
+
+  const { data } = useShopQuery({
     query: QUERY,
     variables: {
       key: (filter && filter.toUpperCase()) || "ID",
+      pageBy: INITIAL_PAGINATION_SIZE,
     },
-    cache: CacheLong,
+    preload: true,
   });
+
+  products = data.products;
 
   return (
     <Layout>
       <SelectFilter filterOptions={filterOptions} />
-      <section className="w-full gap-4 md:gap-8 grid p-6 md:p-8 lg:p-12">
-        <div className="grid-flow-row grid gap-2 gap-y-6 md:gap-4 lg:gap-6 grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-          {products?.nodes?.map((product) => (
-            <ProductCard key={product?.id} product={product} />
-          ))}
-        </div>
-      </section>
+      <LoadMore products={products} url={url.pathname} filter={filter} />
     </Layout>
   );
 };
@@ -41,8 +40,17 @@ const AllProduct = ({ filter }) => {
 export default AllProduct;
 
 const QUERY = gql`
-  query Products($key: ProductSortKeys!) {
-    products(first: 20, query: "collection_type:smart", sortKey: $key) {
+  query Products($key: ProductSortKeys!, $pageBy: Int!, $cursor: String) {
+    products(
+      first: $pageBy
+      after: $cursor
+      query: "collection_type:smart"
+      sortKey: $key
+    ) {
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
       nodes {
         id
         title
@@ -70,3 +78,23 @@ const QUERY = gql`
     }
   }
 `;
+
+export async function api(request, { session, queryShop }) {
+  if (!session) {
+    return new Response("Session storage not available.", { status: 400 });
+  }
+
+  const searchBy = await request.json();
+
+  const { data } = await queryShop({
+    query: QUERY,
+    variables: {
+      key: searchBy?.filterBy?.toUpperCase() || "ID",
+      pageBy: searchBy.pageBy || 4,
+      cursor: searchBy.cursor || null,
+    },
+    preload: true,
+  });
+
+  return data?.products;
+}

@@ -6,7 +6,7 @@ const CustomerDetailsCard = ({ customer }) => {
  
   return (
     <>
-      {isOpen && <UpdateCustomerForm setIsOpen={setIsOpen} />}
+      {isOpen && <UpdateCustomerForm setIsOpen={setIsOpen} customer={customer} />}
       <section className="w-11/12 mx-auto flex justify-between">
         <div className="w-full space-y-3">
           <div className="flex justify-between">
