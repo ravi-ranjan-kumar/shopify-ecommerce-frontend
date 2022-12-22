@@ -7,6 +7,8 @@ export async function api(request, { session, queryShop }) {
   const { customerAccessToken } = await session.get();
   const CustomerUpdateInput = await request.json();
 
+  console.log(CustomerUpdateInput);
+
   const { data } = await queryShop({
     query: UPDATE_CUSTOMER,
     variables: {

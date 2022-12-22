@@ -39,7 +39,8 @@ const Search = ({ filter }) => {
         <>
           <SelectFilter filterOptions={filterOptions} />
           <h2 className="lg:ml-12 lg:mt-6 text-sm">
-            Search Result: <span className="font-bold">{globalSearchQuery}</span>
+            Search Result:{" "}
+            <span className="font-bold">{globalSearchQuery}</span>
           </h2>
           <LoadMore products={products} url={url.pathname} filter={filter} />
         </>

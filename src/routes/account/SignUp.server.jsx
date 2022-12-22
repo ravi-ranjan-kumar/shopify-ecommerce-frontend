@@ -19,25 +19,30 @@ export async function api(request, { session, queryShop }) {
   let newCustomerInputs, fieldErrors, errorIndex;
   newCustomerInputs = await request.json();
 
+  console.log(newCustomerInputs);
+
   const { data, errors } = await queryShop({
     query: SIGNUP_MUTATION,
     variables: {
-      input: { ...jsonBody },
+      input: { ...newCustomerInputs },
     },
     cache: CacheNone(),
   });
 
+  console.log(data);
+  console.log(errors);
+
   fieldErrors = data?.customerCreate?.customerUserErrors?.map((item) => ({
     [item?.field[1]]: item?.message,
   }));
-  errorIndex = data?.customerCreate?.customerUserErrors.length - 1;
+  errorIndex = data?.customerCreate?.customerUserErrors?.length - 1;
 
   if (data?.customerCreate?.customer) {
     return new Response(null, {
       status: 200,
     });
   }
-  return new Response(JSON.stringify(fieldErrors[errorIndex] ?? errors), {
+  return new Response(JSON.stringify(fieldErrors ? fieldErrors[errorIndex] : {error: "Something Went Wrong! try again later"}), {
     status: 401,
   });
 }

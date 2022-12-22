@@ -2,7 +2,14 @@ import { useServerProps } from "@shopify/hydrogen";
 import { useEffect, useRef, useState } from "react";
 
 const UpdateCustomerForm = ({ setIsOpen, customer }) => {
-  const [formData, setFormData] = useState(customer);
+  const { firstName, lastName, email, phone } = customer;
+  const [formData, setFormData] = useState({
+    firstName,
+    lastName,
+    email,
+    phone,
+  });
+
   const [formError, setFormError] = useState();
   const { setServerProps } = useServerProps();
   const menuRef = useRef();
@@ -110,6 +117,7 @@ const UpdateCustomerForm = ({ setIsOpen, customer }) => {
 export default UpdateCustomerForm;
 
 async function updateCustomerDetailsApi(customerInformation) {
+  console.log(customerInformation);
   try {
     const res = await fetch(`/account/updatecustomer`, {
       method: "POST",

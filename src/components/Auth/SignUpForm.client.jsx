@@ -29,7 +29,8 @@ const SignUpForm = () => {
   return (
     <section className="flex items-center justify-center h-[calc(100vh-6rem)] bg-gray-100">
       <div className="px-8 py-3 mx-4 mt-4 text-left bg-white shadow-lg lg:w-2/4 sm:w-2/3 border">
-        <h3 className="text-2xl font-bold text-center">Join us</h3>
+        <h3 className="text-2xl font-bold text-center">Sign Up</h3>
+        <p className="text-red-500">{error?.error}</p>
         <form onSubmit={handleSubmit}>
           <div className="mt-4">
             <div className="flex gap-4">
@@ -165,7 +166,6 @@ export async function callSignUpApi(credentials) {
       return res.json();
     }
   } catch (error) {
-    console.log(error);
     return {
       error: error.toString(),
     };

@@ -12,12 +12,15 @@ const LoadMore = ({ products, url, filter }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
+    let isSubscribed = true;
     if (filter !== undefined) {
-      filterData();
+      filterData(isSubscribed);
     }
+
+    return () => (isSubscribed = false);
   }, [filter]);
 
-  const filterData = async () => {
+  const filterData = async (isSubscribed) => {
     const postUrl = new URL(window.location.origin + url);
     postUrl.searchParams.append("page", allProducts.length);
 
@@ -39,9 +42,11 @@ const LoadMore = ({ products, url, filter }) => {
 
     const newProducts = products?.nodes;
 
-    setCursor(endCursor);
-    sethasNextPage(hasNextPage);
-    setAllProducts([...newProducts]);
+    if (isSubscribed) {
+      setCursor(endCursor);
+      sethasNextPage(hasNextPage);
+      setAllProducts([...newProducts]);
+    }
   };
 
   const handleLoadMore = async (e) => {
@@ -64,7 +69,6 @@ const LoadMore = ({ products, url, filter }) => {
       hasNextPage: false,
     };
     const newProducts = products?.nodes;
-
     setCursor(endCursor);
     sethasNextPage(hasNextPage);
     setAllProducts([...allProducts, ...newProducts]);

@@ -60,18 +60,11 @@ const Header = ({ shop, session, user }) => {
               </svg>
             </button>
             {showProfile ? (
-              session ? (
-                <Profile session={session} user={user} />
-              ) : (
-                <div className="absolute top-5 right-0 flex flex-col mt-6 space-y-3 p-4 bg-yellow-50 shadow-md">
-                  <Link
-                    className="font-medium bg-blue-500 py-2 px-3 rounded text-yellow-50"
-                    to="account/login"
-                  >
-                    Login
-                  </Link>
-                </div>
-              )
+              <Profile
+                session={session}
+                user={user}
+                setShowProfile={setShowProfile}
+              />
             ) : null}
           </div>
         </div>
