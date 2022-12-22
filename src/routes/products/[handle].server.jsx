@@ -109,7 +109,7 @@ const PRODUCT_QUERY = gql`
       id
       title
       vendor
-      descriptionHtml
+      description
       media(first: 7) {
         nodes {
           ...MediaFields

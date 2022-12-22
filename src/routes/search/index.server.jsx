@@ -12,11 +12,11 @@ const filterOptions = [
   { name: "Alphabetically, A-Z", to: "title" },
 ];
 
-let globalSearchQuery;
+let globalSearchQuery,
+  INITIAL_PAGINATION_SIZE = 5;
 
 const Search = ({ filter }) => {
   let products,
-    INITIAL_PAGINATION_SIZE = 4,
     url = useUrl();
 
   globalSearchQuery = url.searchParams.get("q");
@@ -134,7 +134,7 @@ export async function api(request, { session, queryShop }) {
     variables: {
       query: globalSearchQuery,
       key: searchBy?.filterBy?.toUpperCase() || "ID",
-      pageBy: searchBy.pageBy || 4,
+      pageBy: searchBy.pageBy || INITIAL_PAGINATION_SIZE,
       cursor: searchBy.cursor || null,
     },
     preload: true,

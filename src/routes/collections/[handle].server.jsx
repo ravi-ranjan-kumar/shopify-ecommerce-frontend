@@ -21,7 +21,7 @@ const filterOptions = [
   { name: "Alphabetically, A-Z", to: "title" },
 ];
 
-const INITIAL_PAGINATION_SIZE = 4;
+const INITIAL_PAGINATION_SIZE = 5;
 let globalHandle;
 
 export default function Collection({ filter }) {
@@ -144,7 +144,7 @@ export async function api(request, { session, queryShop }) {
     variables: {
       handle: globalHandle,
       key: searchBy?.filterBy?.toUpperCase() || "COLLECTION_DEFAULT",
-      pageBy: searchBy.pageBy || 4,
+      pageBy: searchBy.pageBy || INITIAL_PAGINATION_SIZE,
       cursor: searchBy.cursor || null,
     },
     preload: true,

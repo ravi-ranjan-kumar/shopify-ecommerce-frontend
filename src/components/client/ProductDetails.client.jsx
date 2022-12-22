@@ -30,10 +30,11 @@ const ProductDetails = ({ product }) => {
               </div>
               <ProductForm product={product} />
               <div className="mt-8">
-                <div
+                {/* <div
                   className="prose border-t border-gray-200 text-black text-md"
                   dangerouslySetInnerHTML={{ __html: product.descriptionHtml }}
-                ></div>
+                ></div> */}
+                <p className="prose border-t border-gray-200 text-black text-md">{product.description}</p>
               </div>
             </div>
           </div>

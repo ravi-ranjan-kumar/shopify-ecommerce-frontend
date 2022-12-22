@@ -12,7 +12,7 @@ const filterOptions = [
   { name: "Alphabetically, A-Z", to: "title" },
 ];
 
-let INITIAL_PAGINATION_SIZE = 4;
+let INITIAL_PAGINATION_SIZE = 5;
 
 const AllProduct = ({ filter }) => {
   let products,
@@ -90,7 +90,7 @@ export async function api(request, { session, queryShop }) {
     query: QUERY,
     variables: {
       key: searchBy?.filterBy?.toUpperCase() || "ID",
-      pageBy: searchBy.pageBy || 4,
+      pageBy: searchBy.pageBy || INITIAL_PAGINATION_SIZE,
       cursor: searchBy.cursor || null,
     },
     preload: true,
