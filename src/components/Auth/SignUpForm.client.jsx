@@ -22,7 +22,7 @@ const SignUpForm = () => {
     if (response) {
       setError(response);
     } else {
-      navigate("account");
+      navigate("/account");
     }
   };
 
@@ -40,7 +40,7 @@ const SignUpForm = () => {
                   <input
                     type="text"
                     placeholder="First Name"
-                    className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
+                    className="capitalize w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
                     required
                     value={credentials?.firstName}
                     onChange={(e) =>
@@ -58,7 +58,7 @@ const SignUpForm = () => {
                   <input
                     type="text"
                     placeholder="Last Name"
-                    className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
+                    className="capitalize w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
                     required
                     value={credentials?.lastName}
                     onChange={(e) => {
@@ -78,7 +78,7 @@ const SignUpForm = () => {
               </label>
               <input
                 type="text"
-                placeholder="Phone Number"
+                placeholder="+911234567891"
                 className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
                 required
                 value={credentials?.phone}
@@ -95,8 +95,8 @@ const SignUpForm = () => {
               </label>
               <input
                 type="text"
-                placeholder="Email"
-                className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
+                placeholder="abc@gmail.com"
+                className="lowercase w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
                 required
                 value={credentials?.email}
                 onChange={(e) => {
