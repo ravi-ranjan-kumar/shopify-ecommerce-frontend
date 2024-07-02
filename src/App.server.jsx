@@ -1,4 +1,3 @@
-import React from "react";
 import renderHydrogen from "@shopify/hydrogen/entry-server";
 import {
   Router,
@@ -7,7 +6,6 @@ import {
   CartProvider,
 } from "@shopify/hydrogen";
 import { Suspense } from "react";
-
 
 function App({ routes }) {
   return (
